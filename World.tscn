@@ -1,0 +1,75 @@
+[gd_scene load_steps=8 format=3 uid="uid://cwln0tgm38tjx"]
+
+[ext_resource type="Texture2D" uid="uid://djd4lqtcdopg2" path="res://images/Player-walking.png" id="1_4ba83"]
+[ext_resource type="Script" path="res://World.gd" id="1_llbwc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p8sty"]
+
+[sub_resource type="Animation" id="Animation_jh2q2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_w8tvp"]
+resource_name = "run"
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ddokm"]
+_data = {
+"RESET": SubResource("Animation_jh2q2"),
+"run": SubResource("Animation_w8tvp")
+}
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1xnc4"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
+
+[node name="Player" type="CharacterBody2D"]
+position = Vector2(378, 222)
+collision_layer = 2
+script = ExtResource("1_llbwc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_4ba83")
+hframes = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, -1)
+shape = SubResource("RectangleShape2D_p8sty")
+
+[node name="PlayerMoveAnimation" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ddokm")
+}
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_1xnc4")
